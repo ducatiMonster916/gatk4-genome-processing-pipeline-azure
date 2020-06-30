@@ -23,12 +23,12 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "../structs/GermlineStructs.wdl" as Structs
 
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Alignment.wdl" as Alignment
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/SplitLargeReadGroup.wdl" as SplitRG
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as Processing
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl" as Structs
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Alignment.wdl" as Alignment
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/SplitLargeReadGroup.wdl" as SplitRG
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as Processing
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl" as Structs
 
 # WORKFLOW DEFINITION
 workflow UnmappedBamToAlignedBam {
@@ -38,11 +38,11 @@ workflow UnmappedBamToAlignedBam {
     GermlineSingleSampleReferences references
     PapiSettings papi_settings
 
-    File contamination_sites_ud
-    File contamination_sites_bed
-    File contamination_sites_mu
+    File? contamination_sites_ud
+    File? contamination_sites_bed
+    File? contamination_sites_mu
 
-    String cross_check_fingerprints_by
+  #  String cross_check_fingerprints_by
     File? haplotype_database_file
     Float lod_threshold
     String recalibrated_bam_basename
@@ -206,10 +206,10 @@ workflow UnmappedBamToAlignedBam {
         input_bam_index = SortSampleBam.output_bam_index,
         recalibration_report_filename = sample_and_unmapped_bams.base_file_name + ".recal_data.csv",
         sequence_group_interval = subgroup,
-        dbsnp_vcf = references.dbsnp_vcf,
-        dbsnp_vcf_index = references.dbsnp_vcf_index,
-        known_indels_sites_vcfs = references.known_indels_sites_vcfs,
-        known_indels_sites_indices = references.known_indels_sites_indices,
+#        dbsnp_vcf = references.dbsnp_vcf,
+#        dbsnp_vcf_index = references.dbsnp_vcf_index,
+#        known_indels_sites_vcfs = references.known_indels_sites_vcfs,
+#        known_indels_sites_indices = references.known_indels_sites_indices,
         ref_dict = references.reference_fasta.ref_dict,
         ref_fasta = references.reference_fasta.ref_fasta,
         ref_fasta_index = references.reference_fasta.ref_fasta_index,
@@ -220,12 +220,12 @@ workflow UnmappedBamToAlignedBam {
 
   # Merge the recalibration reports resulting from by-interval recalibration
   # The reports are always the same size
-  call Processing.GatherBqsrReports as GatherBqsrReports {
-    input:
-      input_bqsr_reports = BaseRecalibrator.recalibration_report,
-      output_report_filename = sample_and_unmapped_bams.base_file_name + ".recal_data.csv",
-      preemptible_tries = papi_settings.preemptible_tries
-  }
+#  call Processing.GatherBqsrReports as GatherBqsrReports {
+#    input:
+#      input_bqsr_reports = BaseRecalibrator.recalibration_report,
+#      output_report_filename = sample_and_unmapped_bams.base_file_name + ".recal_data.csv",
+#      preemptible_tries = papi_settings.preemptible_tries
+#  }
 
   scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) {
     # Apply the recalibration model by interval
@@ -234,8 +234,8 @@ workflow UnmappedBamToAlignedBam {
         input_bam = SortSampleBam.output_bam,
         input_bam_index = SortSampleBam.output_bam_index,
         output_bam_basename = recalibrated_bam_basename,
-        recalibration_report = GatherBqsrReports.output_bqsr_report,
-        sequence_group_interval = subgroup,
+#        recalibration_report = GatherBqsrReports.output_bqsr_report,
+#        sequence_group_interval = subgroup,
         ref_dict = references.reference_fasta.ref_dict,
         ref_fasta = references.reference_fasta.ref_fasta,
         ref_fasta_index = references.reference_fasta.ref_fasta_index,
@@ -270,11 +270,11 @@ workflow UnmappedBamToAlignedBam {
 
     File? cross_check_fingerprints_metrics = CrossCheckFingerprints.cross_check_fingerprints_metrics
 
-    File selfSM = CheckContamination.selfSM
-    Float contamination = CheckContamination.contamination
+    File? selfSM = CheckContamination.selfSM
+    Float? contamination = CheckContamination.contamination
 
-    File duplicate_metrics = MarkDuplicates.duplicate_metrics
-    File output_bqsr_reports = GatherBqsrReports.output_bqsr_report
+    File? duplicate_metrics = MarkDuplicates.duplicate_metrics
+    File? output_bqsr_reports = GatherBqsrReports.output_bqsr_report
 
     File output_bam = GatherBamFiles.output_bam
     File output_bam_index = GatherBamFiles.output_bam_index

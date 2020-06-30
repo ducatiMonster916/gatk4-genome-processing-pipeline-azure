@@ -204,89 +204,89 @@ task CollectAggregationMetrics {
 }
 
 # Check that the fingerprints of separate readgroups all match
-task CrossCheckFingerprints {
-  input {
-    Array[File] input_bams
-    Array[File] input_bam_indexes
-    File? haplotype_database_file
-    String metrics_filename
-    Float total_input_size
-    Int preemptible_tries
-    Float lod_threshold
-    String cross_check_by
-  }
+##task CrossCheckFingerprints {
+#  input {
+#    Array[File] input_bams
+#    Array[File] input_bam_indexes
+#    File? haplotype_database_file
+#    String metrics_filename
+#    Float total_input_size
+#    Int preemptible_tries
+#    Float lod_threshold
+#    String cross_check_by
+#  }
 
-  Int disk_size = ceil(total_input_size) + 20
+#  Int disk_size = ceil(total_input_size) + 20
 
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2000m \
-      -jar /usr/gitc/picard.jar \
-      CrosscheckFingerprints \
-      OUTPUT=~{metrics_filename} \
-      HAPLOTYPE_MAP=~{haplotype_database_file} \
-      EXPECT_ALL_GROUPS_TO_MATCH=true \
-      INPUT=~{sep=' INPUT=' input_bams} \
-      LOD_THRESHOLD=~{lod_threshold} \
-      CROSSCHECK_BY=~{cross_check_by}
-  >>>
-  runtime {
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
-    preemptible: true
-    maxRetries: preemptible_tries
-    memory: "2 GB"
-    disk: disk_size + " GB"
-  }
-  output {
-    File cross_check_fingerprints_metrics = "~{metrics_filename}"
-  }
-}
+#  command <<<
+#    java -Dsamjdk.buffer_size=131072 \
+#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2000m \
+#      -jar /usr/gitc/picard.jar \
+#      CrosscheckFingerprints \
+#      OUTPUT=~{metrics_filename} \
+#      HAPLOTYPE_MAP=~{haplotype_database_file} \
+#      EXPECT_ALL_GROUPS_TO_MATCH=true \
+#      INPUT=~{sep=' INPUT=' input_bams} \
+#      LOD_THRESHOLD=~{lod_threshold} \
+#      CROSSCHECK_BY=~{cross_check_by}
+#  >>>
+#  runtime {
+#    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
+#    preemptible: true
+#    maxRetries: preemptible_tries
+#    memory: "2 GB"
+#    disk: disk_size + " GB"
+#  }
+#  output {
+#    File cross_check_fingerprints_metrics = "~{metrics_filename}"
+#  }
+#}
 
 # Check that the fingerprint of the sample BAM matches the sample array
-task CheckFingerprint {
-  input {
-    File input_bam
-    File input_bam_index
-    String output_basename
-    File? haplotype_database_file
-    File? genotypes
-    File? genotypes_index
-    String sample
-    Int preemptible_tries
-  }
+#task CheckFingerprint {
+#  input {
+#    File input_bam
+#    File input_bam_index
+#    String output_basename
+#    File? haplotype_database_file
+#    File? genotypes
+#    File? genotypes_index
+#    String sample
+#    Int preemptible_tries
+#  }
 
-  Int disk_size = ceil(size(input_bam, "GB")) + 20
+#  Int disk_size = ceil(size(input_bam, "GB")) + 20
   # Picard has different behavior depending on whether or not the OUTPUT parameter ends with a '.', so we are explicitly
   #   passing in where we want the two metrics files to go to avoid any potential confusion.
-  String summary_metrics_location = "~{output_basename}.fingerprinting_summary_metrics"
-  String detail_metrics_location = "~{output_basename}.fingerprinting_detail_metrics"
+#  String summary_metrics_location = "~{output_basename}.fingerprinting_summary_metrics"
+#  String detail_metrics_location = "~{output_basename}.fingerprinting_detail_metrics"
 
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2g  \
-      -jar /usr/gitc/picard.jar \
-      CheckFingerprint \
-      INPUT=~{input_bam} \
-      SUMMARY_OUTPUT=~{summary_metrics_location} \
-      DETAIL_OUTPUT=~{detail_metrics_location} \
-      GENOTYPES=~{genotypes} \
-      HAPLOTYPE_MAP=~{haplotype_database_file} \
-      SAMPLE_ALIAS="~{sample}" \
-      IGNORE_READ_GROUPS=true
+#  command <<<
+#    java -Dsamjdk.buffer_size=131072 \
+#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2g  \
+#      -jar /usr/gitc/picard.jar \
+#      CheckFingerprint \
+#      INPUT=~{input_bam} \
+#      SUMMARY_OUTPUT=~{summary_metrics_location} \
+#      DETAIL_OUTPUT=~{detail_metrics_location} \
+#      GENOTYPES=~{genotypes} \
+#      HAPLOTYPE_MAP=~{haplotype_database_file} \
+#      SAMPLE_ALIAS="~{sample}" \
+#      IGNORE_READ_GROUPS=true
                      
-  >>>
- runtime {
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
-    preemptible: true
-    maxRetries: preemptible_tries
-    memory: "3 GB"
-    disk: disk_size + " GB"
-  }
-  output {
-    File summary_metrics = summary_metrics_location
-    File detail_metrics = detail_metrics_location
-  }
-}
+#  >>>
+# runtime {
+#    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
+#    preemptible: true
+#    maxRetries: preemptible_tries
+#    memory: "3 GB"
+#    disk: disk_size + " GB"
+#  }
+#  output {
+#    File summary_metrics = summary_metrics_location
+#    File detail_metrics = detail_metrics_location
+#  }
+#}
 
 task CheckPreValidation {
   input {
@@ -476,8 +476,8 @@ task CollectHsMetrics {
     File ref_fasta
     File ref_fasta_index
     String metrics_filename
-    File target_interval_list
-    File bait_interval_list
+#    File target_interval_list
+#    File bait_interval_list
     Int preemptible_tries
     Int memory_multiplier = 1
     Int additional_disk = 20														
@@ -556,8 +556,8 @@ task ValidateVCF {
     File ref_fasta
     File ref_fasta_index
     File ref_dict
-    File dbsnp_vcf
-    File dbsnp_vcf_index
+  #  File dbsnp_vcf
+  #  File dbsnp_vcf_index
     File calling_interval_list
     Int preemptible_tries
     Boolean is_gvcf = true
@@ -575,7 +575,7 @@ task ValidateVCF {
       -L ~{calling_interval_list} \
       ~{true="-gvcf" false="" is_gvcf} \
       --validation-type-to-exclude ALLELES \
-      --dbsnp ~{dbsnp_vcf}
+ 
   }
   runtime {
     docker: gatk_docker
@@ -586,41 +586,4 @@ task ValidateVCF {
   }
 }
 
-# Collect variant calling metrics from GVCF output
-task CollectVariantCallingMetrics {
-  input {
-    File input_vcf
-    File input_vcf_index
-    String metrics_basename
-    File dbsnp_vcf
-    File dbsnp_vcf_index
-    File ref_dict
-    File evaluation_interval_list
-    Boolean is_gvcf = true
-    Int preemptible_tries
-  }
 
-  Int disk_size = ceil(size(input_vcf, "GB") + size(dbsnp_vcf, "GB")) + 20
-
-  command {
-    java -Xms2000m -jar /usr/gitc/picard.jar \
-      CollectVariantCallingMetrics \
-      INPUT=~{input_vcf} \
-      OUTPUT=~{metrics_basename} \
-      DBSNP=~{dbsnp_vcf} \
-      SEQUENCE_DICTIONARY=~{ref_dict} \
-      TARGET_INTERVALS=~{evaluation_interval_list} \
-      ~{true="GVCF_INPUT=true" false="" is_gvcf}
-  }
-  runtime {
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
-    preemptible: true
-    maxRetries: preemptible_tries
-    memory: "3 GB"
-    disk: disk_size + " GB"
-  }
-  output {
-    File summary_metrics = "~{metrics_basename}.variant_calling_summary_metrics"
-    File detail_metrics = "~{metrics_basename}.variant_calling_detail_metrics"
-  }
-}

@@ -263,60 +263,60 @@ task CNNScoreVariants {
   }
 }
 
-task FilterVariantTranches {
+##task FilterVariantTranches {
 
-  input {
-    File input_vcf
-    File input_vcf_index
-    String vcf_basename
-    Array[String] snp_tranches
-    Array[String] indel_tranches
-    File hapmap_resource_vcf
-    File hapmap_resource_vcf_index
-    File omni_resource_vcf
-    File omni_resource_vcf_index
-    File one_thousand_genomes_resource_vcf
-    File one_thousand_genomes_resource_vcf_index
-    File dbsnp_resource_vcf
-    File dbsnp_resource_vcf_index
-    String info_key
-    Int preemptible_tries
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.0.0"
-  }
+##  input {
+##    File input_vcf
+##    File input_vcf_index
+##    String vcf_basename
+##    Array[String] snp_tranches
+##   Array[String] indel_tranches
+##   File hapmap_resource_vcf
+##    File hapmap_resource_vcf_index
+##    File omni_resource_vcf
+##    File omni_resource_vcf_index
+##    File one_thousand_genomes_resource_vcf
+##    File one_thousand_genomes_resource_vcf_index
+##    File dbsnp_resource_vcf
+##   File dbsnp_resource_vcf_index
+##    String info_key
+##    Int preemptible_tries
+##    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.0.0"
+##  }
 
-  Int disk_size = ceil(size(hapmap_resource_vcf, "GB") +
-                        size(omni_resource_vcf, "GB") +
-                        size(one_thousand_genomes_resource_vcf, "GB") +
-                        size(dbsnp_resource_vcf, "GB") +
-                        (size(input_vcf, "GB") * 2)
-                      ) + 20
+##  Int disk_size = ceil(size(hapmap_resource_vcf, "GB") +
+##                       size(omni_resource_vcf, "GB") +
+##                        size(one_thousand_genomes_resource_vcf, "GB") +
+##                        size(dbsnp_resource_vcf, "GB") +
+##                        (size(input_vcf, "GB") * 2)
+##                      ) + 20
 
-  command {
+##  command {
 
-    gatk --java-options -Xmx6g FilterVariantTranches \
-      -V ~{input_vcf} \
-      -O ~{vcf_basename}.filtered.vcf.gz \
-      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
-      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
-      --resource ~{hapmap_resource_vcf} \
-      --resource ~{omni_resource_vcf} \
-      --resource ~{one_thousand_genomes_resource_vcf} \
-      --resource ~{dbsnp_resource_vcf} \
-      --info-key ~{info_key} \
-      --create-output-variant-index true
-  }
+##    gatk --java-options -Xmx6g FilterVariantTranches \
+##      -V ~{input_vcf} \
+##      -O ~{vcf_basename}.filtered.vcf.gz \
+##      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
+##      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
+##      --resource ~{hapmap_resource_vcf} \
+##      --resource ~{omni_resource_vcf} \
+##      --resource ~{one_thousand_genomes_resource_vcf} \
+##      --resource ~{dbsnp_resource_vcf} \
+##      --info-key ~{info_key} \
+##      --create-output-variant-index true
+##  }
 
-  output {
-    File filtered_vcf = "~{vcf_basename}.filtered.vcf.gz"
-    File filtered_vcf_index = "~{vcf_basename}.filtered.vcf.gz.tbi"
-  }
+##  output {
+##    File filtered_vcf = "~{vcf_basename}.filtered.vcf.gz"
+##   File filtered_vcf_index = "~{vcf_basename}.filtered.vcf.gz.tbi"
+##  }
 
-  runtime {
-    memory: "7 GB"
-    cpu: "2"
-    disk: disk_size + " GB"
-    preemptible: true
-    maxRetries: preemptible_tries
-    docker: gatk_docker
-  }
-}
+##  runtime {
+##    memory: "7 GB"
+##   cpu: "2"
+##    disk: disk_size + " GB"
+##    preemptible: true
+##    maxRetries: preemptible_tries
+##    docker: gatk_docker
+##  }
+##}

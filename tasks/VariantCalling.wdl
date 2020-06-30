@@ -5,10 +5,10 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "./BamProcessing.wdl" as BamProcessing
 
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/GermlineVariantDiscovery.wdl" as Calling
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as BamProcessing
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/GermlineVariantDiscovery.wdl" as Calling
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as BamProcessing
 
 workflow VariantCalling {
 
@@ -23,8 +23,9 @@ workflow VariantCalling {
     File ref_fasta
     File ref_fasta_index
     File ref_dict
-    File dbsnp_vcf
-    File dbsnp_vcf_index
+  
+  #  File dbsnp_vcf
+  #  File dbsnp_vcf_index
     String base_file_name
     String final_vcf_base_name
     Int agg_preemptible_tries
@@ -129,8 +130,8 @@ workflow VariantCalling {
     input:
       input_vcf = MergeVCFs.output_vcf,
       input_vcf_index = MergeVCFs.output_vcf_index,
-      dbsnp_vcf = dbsnp_vcf,
-      dbsnp_vcf_index = dbsnp_vcf_index,
+ #     dbsnp_vcf = dbsnp_vcf,
+ #     dbsnp_vcf_index = dbsnp_vcf_index,
       ref_fasta = ref_fasta,
       ref_fasta_index = ref_fasta_index,
       ref_dict = ref_dict,

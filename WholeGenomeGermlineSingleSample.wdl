@@ -35,12 +35,12 @@ version 1.0
 #import "./tasks/VariantCalling.wdl" as ToGvcf
 #import "./structs/GermlineStructs.wdl"
 
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/UnmappedBamToAlignedBam.wdl" as ToBam
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/AggregatedBamQC.wdl" as AggregatedQC
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamToCram.wdl" as ToCram
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/VariantCalling.wdl" as ToGvcf
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/UnmappedBamToAlignedBam.wdl" as ToBam
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/AggregatedBamQC.wdl" as AggregatedQC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamToCram.wdl" as ToCram
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/VariantCalling.wdl" as ToGvcf
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
 
 # WORKFLOW DEFINITION
 workflow WholeGenomeGermlineSingleSample {
@@ -51,7 +51,7 @@ workflow WholeGenomeGermlineSingleSample {
     SampleAndUnmappedBams sample_and_unmapped_bams
     GermlineSingleSampleReferences references
     PapiSettings papi_settings
-    File wgs_coverage_interval_list
+    #File wgs_coverage_interval_list
 
     File? haplotype_database_file
     Boolean provide_bam_output = false
@@ -59,9 +59,9 @@ workflow WholeGenomeGermlineSingleSample {
   }
 
   # Not overridable:
-  Int read_length = 250
+  Int read_length = 150
   Float lod_threshold = -20.0
-  String cross_check_fingerprints_by = "READGROUP"
+  #String cross_check_fingerprints_by = "READGROUP"
   String recalibrated_bam_basename = sample_and_unmapped_bams.base_file_name + ".aligned.duplicates_marked.recalibrated"
 
   call ToBam.UnmappedBamToAlignedBam {
@@ -70,9 +70,9 @@ workflow WholeGenomeGermlineSingleSample {
       references                  = references,
       papi_settings               = papi_settings,
 
-      contamination_sites_ud = references.contamination_sites_ud,
-      contamination_sites_bed = references.contamination_sites_bed,
-      contamination_sites_mu = references.contamination_sites_mu,
+      #contamination_sites_ud = references.contamination_sites_ud,
+      #contamination_sites_bed = references.contamination_sites_bed,
+      #contamination_sites_mu = references.contamination_sites_mu,
 
       cross_check_fingerprints_by = cross_check_fingerprints_by,
       haplotype_database_file     = haplotype_database_file,
@@ -142,8 +142,8 @@ workflow WholeGenomeGermlineSingleSample {
       ref_fasta = references.reference_fasta.ref_fasta,
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       ref_dict = references.reference_fasta.ref_dict,
-      dbsnp_vcf = references.dbsnp_vcf,
-      dbsnp_vcf_index = references.dbsnp_vcf_index,
+      #dbsnp_vcf = references.dbsnp_vcf,
+      #dbsnp_vcf_index = references.dbsnp_vcf_index,
       base_file_name = sample_and_unmapped_bams.base_file_name,
       final_vcf_base_name = sample_and_unmapped_bams.final_gvcf_base_name,
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
@@ -175,8 +175,8 @@ workflow WholeGenomeGermlineSingleSample {
 
     File? cross_check_fingerprints_metrics = UnmappedBamToAlignedBam.cross_check_fingerprints_metrics
 
-    File selfSM = UnmappedBamToAlignedBam.selfSM
-    Float contamination = UnmappedBamToAlignedBam.contamination
+    #File selfSM = UnmappedBamToAlignedBam.selfSM
+    Float? contamination = UnmappedBamToAlignedBam.contamination
 
     File calculate_read_group_checksum_md5 = AggregatedBamQC.calculate_read_group_checksum_md5
 
@@ -201,7 +201,7 @@ workflow WholeGenomeGermlineSingleSample {
     File raw_wgs_metrics = CollectRawWgsMetrics.metrics
 
     File duplicate_metrics = UnmappedBamToAlignedBam.duplicate_metrics
-    File output_bqsr_reports = UnmappedBamToAlignedBam.output_bqsr_reports
+    #File output_bqsr_reports = UnmappedBamToAlignedBam.output_bqsr_reports
 
     File gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
     File gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
