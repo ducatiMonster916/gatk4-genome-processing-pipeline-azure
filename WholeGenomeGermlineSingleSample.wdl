@@ -51,7 +51,7 @@ workflow WholeGenomeGermlineSingleSample {
     SampleAndUnmappedBams sample_and_unmapped_bams
     GermlineSingleSampleReferences references
     PapiSettings papi_settings
-    #File wgs_coverage_interval_list
+    File wgs_coverage_interval_list
 
     File? haplotype_database_file
     Boolean provide_bam_output = false
@@ -61,7 +61,7 @@ workflow WholeGenomeGermlineSingleSample {
   # Not overridable:
   Int read_length = 150
   Float lod_threshold = -20.0
-  #String cross_check_fingerprints_by = "READGROUP"
+  String cross_check_fingerprints_by = "READGROUP"
   String recalibrated_bam_basename = sample_and_unmapped_bams.base_file_name + ".aligned.duplicates_marked.recalibrated"
 
   call ToBam.UnmappedBamToAlignedBam {
