@@ -1,19 +1,19 @@
 version 1.0
 
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL pipeline implements a split of large readgroups for human whole-genome and exome sequencing data.
+###This WDL pipeline implements a split of large readgroups for human whole-genome and exome sequencing data.
 ##
-## Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
 #import "./Alignment.wdl" as Alignment
 #import "./BamProcessing.wdl" as Processing
@@ -34,9 +34,9 @@ workflow SplitLargeReadGroup {
     String bwa_version
     String output_bam_basename
 
-    # reference_fasta.ref_alt is the .alt file from bwa-kit
-    # (https://github.com/lh3/bwa/tree/master/bwakit),
-    # listing the reference contigs that are "alternative".
+    ##reference_fasta.ref_alt is the .alt file from bwa-kit
+    ##(https://github.com/lh3/bwa/tree/master/bwakit),
+    ##listing the reference contigs that are "alternative".
     ReferenceFasta reference_fasta
 
     Int compression_level

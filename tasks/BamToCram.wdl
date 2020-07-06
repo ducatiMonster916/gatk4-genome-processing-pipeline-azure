@@ -20,12 +20,12 @@ workflow BamToCram {
   }
 
 
-  # ValidateSamFile runs out of memory in mate validation on crazy edge case data, so we want to skip the mate validation
-  # in those cases.  These values set the thresholds for what is considered outside the normal realm of "reasonable" data.
+  ##ValidateSamFile runs out of memory in mate validation on crazy edge case data, so we want to skip the mate validation
+  ##in those cases.  These values set the thresholds for what is considered outside the normal realm of "reasonable" data.
   Float max_duplication_in_reasonable_sample = 0.30
   Float max_chimerism_in_reasonable_sample = 0.15
 
-  # Convert the final merged recalibrated BAM file to CRAM format
+  ##Convert the final merged recalibrated BAM file to CRAM format
   call Utils.ConvertToCram as ConvertToCram {
     input:
       input_bam = input_bam,
@@ -35,7 +35,7 @@ workflow BamToCram {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # Check whether the data has massively high duplication or chimerism rates
+  ##Check whether the data has massively high duplication or chimerism rates
   call QC.CheckPreValidation as CheckPreValidation {
     input:
       duplication_metrics = duplication_metrics,
@@ -45,7 +45,7 @@ workflow BamToCram {
       preemptible_tries = agg_preemptible_tries
  }
 
-  # Validate the CRAM file
+  ##Validate the CRAM file
   call QC.ValidateSamFile as ValidateCram {
     input:
       input_bam = ConvertToCram.output_cram,

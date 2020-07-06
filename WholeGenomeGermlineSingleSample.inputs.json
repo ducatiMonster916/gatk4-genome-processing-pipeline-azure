@@ -38,7 +38,7 @@
     "reference_fasta": {
       "ref_dict": "/msgenpublicdata/inputs/broad-references/hg38/v0/Homo_sapiens_assembly38.dict",
       "ref_fasta": "/msgenpublicdata/inputs/broad-references/hg38/v0/Homo_sapiens_assembly38.fasta",
-      "ref_fasta_index": "/msgenpublicdata/inputs/broad-references/hg38/v0/Homo_sapiens_assembly38.fasta.fai",
+      "ref_fasta_index": "/msgenpublicdata/inputs/broad-references/hg38/v0/Homo_sapiens_assembly38.fasta.fai"
     },
     "evaluation_interval_list": "/msgenpublicdata/inputs/broad-references/hg38/v0/wgs_evaluation_regions.hg38.interval_list"
   },

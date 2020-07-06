@@ -1,19 +1,19 @@
 version 1.0
 
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL defines tasks used for germline variant discovery of human whole-genome or exome sequencing data.
+###This WDL defines tasks used for germline variant discovery of human whole-genome or exome sequencing data.
 ##
-## Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
 task HaplotypeCaller_GATK35_GVCF {
   input {
@@ -38,11 +38,11 @@ task HaplotypeCaller_GATK35_GVCF {
   Float ref_size = size(ref_fasta, "GB") + size(ref_fasta_index, "GB") + size(ref_dict, "GB")
   Int disk_size = ceil(size(input_bam, "GB") + 30 + size(input_bam_index, "GB")+ ref_size) + 20
 
-  # We use interval_padding 500 below to make sure that the HaplotypeCaller has context on both sides around
-  # the interval because the assembly uses them.
+  ##We use interval_padding 500 below to make sure that the HaplotypeCaller has context on both sides around
+  ##the interval because the assembly uses them.
   #
-  # Using PrintReads is a temporary solution until we update HaploypeCaller to use GATK4. Once that is done,
-  # HaplotypeCaller can stream the required intervals directly from the cloud.
+  ##Using PrintReads is a temporary solution until we update HaploypeCaller to use GATK4. Once that is done,
+  ##HaplotypeCaller can stream the required intervals directly from the cloud.
   command {
     /usr/gitc/gatk4/gatk-launch --javaOptions "-Xms2g" \
       PrintReads \
@@ -125,7 +125,7 @@ task HaplotypeCaller_GATK4_VCF {
       ~{true="-ERC GVCF" false="" make_gvcf} \
       ~{bamout_arg}
 
-    # Cromwell doesn't like optional task outputs, so we have to touch this file.
+    ##Cromwell doesn't like optional task outputs, so we have to touch this file.
     touch ~{vcf_basename}.bamout.bam
   >>>
 
@@ -145,7 +145,7 @@ task HaplotypeCaller_GATK4_VCF {
   }
 }
 
-# Combine multiple VCFs or GVCFs from scattered HaplotypeCaller runs
+##Combine multiple VCFs or GVCFs from scattered HaplotypeCaller runs
 task MergeVCFs {
   input {
     Array[File] input_vcfs
@@ -156,8 +156,8 @@ task MergeVCFs {
 
   Int disk_size = ceil(size(input_vcfs, "GB") * 2.5) + 10
 
-  # Using MergeVcfs instead of GatherVcfs so we can create indices
-  # See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket
+  ##Using MergeVcfs instead of GatherVcfs so we can create indices
+  ##See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket
   command {
     java -Xms2000m -jar /usr/gitc/picard.jar \
       MergeVcfs \
@@ -265,58 +265,58 @@ task CNNScoreVariants {
 
 ##task FilterVariantTranches {
 
-##  input {
-##    File input_vcf
-##    File input_vcf_index
-##    String vcf_basename
-##    Array[String] snp_tranches
-##   Array[String] indel_tranches
-##   File hapmap_resource_vcf
-##    File hapmap_resource_vcf_index
-##    File omni_resource_vcf
-##    File omni_resource_vcf_index
-##    File one_thousand_genomes_resource_vcf
-##    File one_thousand_genomes_resource_vcf_index
-##    File dbsnp_resource_vcf
-##   File dbsnp_resource_vcf_index
-##    String info_key
-##    Int preemptible_tries
-##    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.0.0"
-##  }
+### input {
+###   File input_vcf
+###   File input_vcf_index
+###   String vcf_basename
+###   Array[String] snp_tranches
+###  Array[String] indel_tranches
+###  File hapmap_resource_vcf
+###   File hapmap_resource_vcf_index
+###   File omni_resource_vcf
+###   File omni_resource_vcf_index
+###   File one_thousand_genomes_resource_vcf
+###   File one_thousand_genomes_resource_vcf_index
+###   File dbsnp_resource_vcf
+###  File dbsnp_resource_vcf_index
+###   String info_key
+###   Int preemptible_tries
+###   String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.0.0"
+### }
 
-##  Int disk_size = ceil(size(hapmap_resource_vcf, "GB") +
-##                       size(omni_resource_vcf, "GB") +
-##                        size(one_thousand_genomes_resource_vcf, "GB") +
-##                        size(dbsnp_resource_vcf, "GB") +
-##                        (size(input_vcf, "GB") * 2)
-##                      ) + 20
+### Int disk_size = ceil(size(hapmap_resource_vcf, "GB") +
+###                      size(omni_resource_vcf, "GB") +
+###                       size(one_thousand_genomes_resource_vcf, "GB") +
+###                       size(dbsnp_resource_vcf, "GB") +
+###                       (size(input_vcf, "GB") * 2)
+###                     ) + 20
 
-##  command {
+### command {
 
-##    gatk --java-options -Xmx6g FilterVariantTranches \
-##      -V ~{input_vcf} \
-##      -O ~{vcf_basename}.filtered.vcf.gz \
-##      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
-##      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
-##      --resource ~{hapmap_resource_vcf} \
-##      --resource ~{omni_resource_vcf} \
-##      --resource ~{one_thousand_genomes_resource_vcf} \
-##      --resource ~{dbsnp_resource_vcf} \
-##      --info-key ~{info_key} \
-##      --create-output-variant-index true
-##  }
+###   gatk --java-options -Xmx6g FilterVariantTranches \
+###     -V ~{input_vcf} \
+###     -O ~{vcf_basename}.filtered.vcf.gz \
+###     ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
+###     ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
+###     --resource ~{hapmap_resource_vcf} \
+###     --resource ~{omni_resource_vcf} \
+###     --resource ~{one_thousand_genomes_resource_vcf} \
+###     --resource ~{dbsnp_resource_vcf} \
+###     --info-key ~{info_key} \
+###     --create-output-variant-index true
+### }
 
-##  output {
-##    File filtered_vcf = "~{vcf_basename}.filtered.vcf.gz"
-##   File filtered_vcf_index = "~{vcf_basename}.filtered.vcf.gz.tbi"
-##  }
+### output {
+###   File filtered_vcf = "~{vcf_basename}.filtered.vcf.gz"
+###  File filtered_vcf_index = "~{vcf_basename}.filtered.vcf.gz.tbi"
+### }
 
-##  runtime {
-##    memory: "7 GB"
-##   cpu: "2"
-##    disk: disk_size + " GB"
-##    preemptible: true
-##    maxRetries: preemptible_tries
-##    docker: gatk_docker
-##  }
+### runtime {
+###   memory: "7 GB"
+###  cpu: "2"
+###   disk: disk_size + " GB"
+###   preemptible: true
+###   maxRetries: preemptible_tries
+###   docker: gatk_docker
+### }
 ##}
