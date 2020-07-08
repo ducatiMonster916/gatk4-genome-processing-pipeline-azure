@@ -1,6 +1,6 @@
 {
   "WorkflowUrl": "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/WholeGenomeGermlineSingleSample.wdl",
-  "WorkflowInputsUrl": "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/WholeGenomeGermlineSingleSample.inputs.json",
+  "WorkflowInputsUrl": "https://anupcoab7516485940e.blob.core.windows.net/inputs/SRR12054092/alignment-calling/WholeGenomeGermlineSingleSample.inputs.json",
   "WorkflowOptionsUrl": null,
   "WorkflowDependenciesUrl": null
 }
