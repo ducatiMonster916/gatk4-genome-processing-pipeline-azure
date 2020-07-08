@@ -35,12 +35,12 @@ version 1.0
 #import "./tasks/VariantCalling.wdl" as ToGvcf
 #import "./structs/GermlineStructs.wdl"
 
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/UnmappedBamToAlignedBam.wdl" as ToBam
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/AggregatedBamQC.wdl" as AggregatedQC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamToCram.wdl" as ToCram
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/VariantCalling.wdl" as ToGvcf
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/UnmappedBamToAlignedBam.wdl" as ToBam
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/AggregatedBamQC.wdl" as AggregatedQC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamToCram.wdl" as ToCram
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/VariantCalling.wdl" as ToGvcf
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/structs/GermlineStructs.wdl"
 
 ##WORKFLOW DEFINITION
 workflow WholeGenomeGermlineSingleSample {

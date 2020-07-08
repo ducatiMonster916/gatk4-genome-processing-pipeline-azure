@@ -5,10 +5,10 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "./BamProcessing.wdl" as BamProcessing
 
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/GermlineVariantDiscovery.wdl" as Calling
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as BamProcessing
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/GermlineVariantDiscovery.wdl" as Calling
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamProcessing.wdl" as BamProcessing
 
 workflow VariantCalling {
 
