@@ -1,21 +1,21 @@
 version 1.0
 
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL defines tasks used for QC of human whole-genome or exome sequencing data.
+###This WDL defines tasks used for QC of human whole-genome or exome sequencing data.
 ##
-## Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
-# Collect sequencing yield quality metrics
+##Collect sequencing yield quality metrics
 task CollectQualityYieldMetrics {
   input {
     File input_bam
@@ -44,7 +44,7 @@ task CollectQualityYieldMetrics {
   }
 }
 
-# Collect base quality and insert size metrics
+##Collect base quality and insert size metrics
 task CollectUnsortedReadgroupBamQualityMetrics {
   input {
     File input_bam
@@ -90,7 +90,7 @@ task CollectUnsortedReadgroupBamQualityMetrics {
   }
 }
 
-# Collect alignment summary and GC bias quality metrics
+##Collect alignment summary and GC bias quality metrics
 task CollectReadgroupBamQualityMetrics {
   input {
     File input_bam
@@ -107,7 +107,7 @@ task CollectReadgroupBamQualityMetrics {
   Int disk_size = ceil(size(input_bam, "GB") + ref_size) + 20
 
   command {
-    # These are optionally generated, but need to exist for Cromwell's sake
+    ##These are optionally generated, but need to exist for Cromwell's sake
     touch ~{output_bam_prefix}.gc_bias.detail_metrics \
       ~{output_bam_prefix}.gc_bias.pdf \
       ~{output_bam_prefix}.gc_bias.summary_metrics
@@ -139,7 +139,7 @@ task CollectReadgroupBamQualityMetrics {
   }
 }
 
-# Collect quality metrics from the aggregated bam
+##Collect quality metrics from the aggregated bam
 task CollectAggregationMetrics {
   input {
     File input_bam
@@ -156,7 +156,7 @@ task CollectAggregationMetrics {
   Int disk_size = ceil(size(input_bam, "GB") + ref_size) + 20
 
   command {
-    # These are optionally generated, but need to exist for Cromwell's sake
+    ##These are optionally generated, but need to exist for Cromwell's sake
     touch ~{output_bam_prefix}.gc_bias.detail_metrics \
       ~{output_bam_prefix}.gc_bias.pdf \
       ~{output_bam_prefix}.gc_bias.summary_metrics \
@@ -203,89 +203,89 @@ task CollectAggregationMetrics {
   }
 }
 
-# Check that the fingerprints of separate readgroups all match
+##Check that the fingerprints of separate readgroups all match
 ##task CrossCheckFingerprints {
-#  input {
-#    Array[File] input_bams
-#    Array[File] input_bam_indexes
-#    File? haplotype_database_file
-#    String metrics_filename
-#    Float total_input_size
-#    Int preemptible_tries
-#    Float lod_threshold
-#    String cross_check_by
-#  }
+## input {
+##   Array[File] input_bams
+##   Array[File] input_bam_indexes
+##   File? haplotype_database_file
+##   String metrics_filename
+##   Float total_input_size
+##   Int preemptible_tries
+##   Float lod_threshold
+##   String cross_check_by
+## }
 
-#  Int disk_size = ceil(total_input_size) + 20
+## Int disk_size = ceil(total_input_size) + 20
 
-#  command <<<
-#    java -Dsamjdk.buffer_size=131072 \
-#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2000m \
-#      -jar /usr/gitc/picard.jar \
-#      CrosscheckFingerprints \
-#      OUTPUT=~{metrics_filename} \
-#      HAPLOTYPE_MAP=~{haplotype_database_file} \
-#      EXPECT_ALL_GROUPS_TO_MATCH=true \
-#      INPUT=~{sep=' INPUT=' input_bams} \
-#      LOD_THRESHOLD=~{lod_threshold} \
-#      CROSSCHECK_BY=~{cross_check_by}
-#  >>>
-#  runtime {
-#    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
-#    preemptible: true
-#    maxRetries: preemptible_tries
-#    memory: "2 GB"
-#    disk: disk_size + " GB"
-#  }
-#  output {
-#    File cross_check_fingerprints_metrics = "~{metrics_filename}"
-#  }
+## command <<<
+##   java -Dsamjdk.buffer_size=131072 \
+##     -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2000m \
+##     -jar /usr/gitc/picard.jar \
+##     CrosscheckFingerprints \
+##     OUTPUT=~{metrics_filename} \
+##     HAPLOTYPE_MAP=~{haplotype_database_file} \
+##     EXPECT_ALL_GROUPS_TO_MATCH=true \
+##     INPUT=~{sep=' INPUT=' input_bams} \
+##     LOD_THRESHOLD=~{lod_threshold} \
+##     CROSSCHECK_BY=~{cross_check_by}
+## >>>
+## runtime {
+##   docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
+##   preemptible: true
+##   maxRetries: preemptible_tries
+##   memory: "2 GB"
+##   disk: disk_size + " GB"
+## }
+## output {
+##   File cross_check_fingerprints_metrics = "~{metrics_filename}"
+## }
 #}
 
-# Check that the fingerprint of the sample BAM matches the sample array
+##Check that the fingerprint of the sample BAM matches the sample array
 #task CheckFingerprint {
-#  input {
-#    File input_bam
-#    File input_bam_index
-#    String output_basename
-#    File? haplotype_database_file
-#    File? genotypes
-#    File? genotypes_index
-#    String sample
-#    Int preemptible_tries
-#  }
+## input {
+##   File input_bam
+##   File input_bam_index
+##   String output_basename
+##   File? haplotype_database_file
+##   File? genotypes
+##   File? genotypes_index
+##   String sample
+##   Int preemptible_tries
+## }
 
-#  Int disk_size = ceil(size(input_bam, "GB")) + 20
-  # Picard has different behavior depending on whether or not the OUTPUT parameter ends with a '.', so we are explicitly
-  #   passing in where we want the two metrics files to go to avoid any potential confusion.
-#  String summary_metrics_location = "~{output_basename}.fingerprinting_summary_metrics"
-#  String detail_metrics_location = "~{output_basename}.fingerprinting_detail_metrics"
+## Int disk_size = ceil(size(input_bam, "GB")) + 20
+  ##Picard has different behavior depending on whether or not the OUTPUT parameter ends with a '.', so we are explicitly
+  ##  passing in where we want the two metrics files to go to avoid any potential confusion.
+## String summary_metrics_location = "~{output_basename}.fingerprinting_summary_metrics"
+## String detail_metrics_location = "~{output_basename}.fingerprinting_detail_metrics"
 
-#  command <<<
-#    java -Dsamjdk.buffer_size=131072 \
-#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2g  \
-#      -jar /usr/gitc/picard.jar \
-#      CheckFingerprint \
-#      INPUT=~{input_bam} \
-#      SUMMARY_OUTPUT=~{summary_metrics_location} \
-#      DETAIL_OUTPUT=~{detail_metrics_location} \
-#      GENOTYPES=~{genotypes} \
-#      HAPLOTYPE_MAP=~{haplotype_database_file} \
-#      SAMPLE_ALIAS="~{sample}" \
-#      IGNORE_READ_GROUPS=true
+## command <<<
+##   java -Dsamjdk.buffer_size=131072 \
+##     -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2g  \
+##     -jar /usr/gitc/picard.jar \
+##     CheckFingerprint \
+##     INPUT=~{input_bam} \
+##     SUMMARY_OUTPUT=~{summary_metrics_location} \
+##     DETAIL_OUTPUT=~{detail_metrics_location} \
+##     GENOTYPES=~{genotypes} \
+##     HAPLOTYPE_MAP=~{haplotype_database_file} \
+##     SAMPLE_ALIAS="~{sample}" \
+##     IGNORE_READ_GROUPS=true
                      
-#  >>>
-# runtime {
-#    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
-#    preemptible: true
-#    maxRetries: preemptible_tries
-#    memory: "3 GB"
-#    disk: disk_size + " GB"
-#  }
-#  output {
-#    File summary_metrics = summary_metrics_location
-#    File detail_metrics = detail_metrics_location
-#  }
+## >>>
+##runtime {
+##   docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
+##   preemptible: true
+##   maxRetries: preemptible_tries
+##   memory: "3 GB"
+##   disk: disk_size + " GB"
+## }
+## output {
+##   File summary_metrics = summary_metrics_location
+##   File detail_metrics = detail_metrics_location
+## }
 #}
 
 task CheckPreValidation {
@@ -384,7 +384,7 @@ task ValidateSamFile {
   }
 }
 
-# Note these tasks will break if the read lengths in the bam are greater than 250.
+##Note these tasks will break if the read lengths in the bam are greater than 250.
 task CollectWgsMetrics {
   input {
     File input_bam
@@ -424,7 +424,7 @@ task CollectWgsMetrics {
   }
 }
 
-# Collect raw WGS metrics (commonly used QC thresholds)
+##Collect raw WGS metrics (commonly used QC thresholds)
 task CollectRawWgsMetrics {
   input {
     File input_bam
@@ -476,8 +476,8 @@ task CollectHsMetrics {
     File ref_fasta
     File ref_fasta_index
     String metrics_filename
-#    File target_interval_list
-#    File bait_interval_list
+##   File target_interval_list
+##   File bait_interval_list
     Int preemptible_tries
     Int memory_multiplier = 1
     Int additional_disk = 20														
@@ -485,13 +485,13 @@ task CollectHsMetrics {
 
   Float ref_size = size(ref_fasta, "GB") + size(ref_fasta_index, "GB")
   Int disk_size = ceil(size(input_bam, "GB") + ref_size) + additional_disk
-  # Try to fit the input bam into memory, within reason.
+  ##Try to fit the input bam into memory, within reason.
   Int rounded_bam_size = ceil(size(input_bam, "GB") + 0.5)
   Int rounded_memory_size = ceil((if (rounded_bam_size > 10) then 10 else rounded_bam_size) * memory_multiplier)
   Int memory_size = if rounded_memory_size < 7 then 7 else rounded_memory_size
   Int java_memory_size = (memory_size - 1) * 1000
 
-  # There are probably more metrics we want to generate with this tool
+  ##There are probably more metrics we want to generate with this tool
   command {
     java -Xms~{java_memory_size}m -jar /usr/gitc/picard.jar \
       CollectHsMetrics \
@@ -519,7 +519,7 @@ task CollectHsMetrics {
   }
 }
 
-# Generate a checksum per readgroup
+##Generate a checksum per readgroup
 task CalculateReadGroupChecksum {
   input {
     File input_bam
@@ -548,7 +548,7 @@ task CalculateReadGroupChecksum {
   }
 }
 
-# Validate a (g)VCF with -gvcf specific validation
+##Validate a (g)VCF with -gvcf specific validation
 task ValidateVCF {
   input {
     File input_vcf
@@ -556,8 +556,8 @@ task ValidateVCF {
     File ref_fasta
     File ref_fasta_index
     File ref_dict
-  #  File dbsnp_vcf
-  #  File dbsnp_vcf_index
+  ## File dbsnp_vcf
+  ## File dbsnp_vcf_index
     File calling_interval_list
     Int preemptible_tries
     Boolean is_gvcf = true

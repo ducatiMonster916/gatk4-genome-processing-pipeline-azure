@@ -1,27 +1,27 @@
 version 1.0
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL pipeline implements data processing according to the GATK Best Practices (June 2016)
-## for human whole-genome and exome sequencing data.
+###This WDL pipeline implements data processing according to the GATK Best Practices (June 2016)
+###for human whole-genome and exome sequencing data.
 ##
-## Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
 #import "./Qc.wdl" as QC
 #import "../structs/GermlineStructs.wdl"
 
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/microsoft/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
 
-# WORKFLOW DEFINITION
+##WORKFLOW DEFINITION
 workflow AggregatedBamQC {
 input {
     File base_recalibrated_bam
@@ -34,7 +34,7 @@ input {
     PapiSettings papi_settings
   }
 
-  # QC the final BAM (consolidated after scattered BQSR)
+  ##QC the final BAM (consolidated after scattered BQSR)
   call QC.CollectReadgroupBamQualityMetrics as CollectReadgroupBamQualityMetrics {
     input:
       input_bam = base_recalibrated_bam,
@@ -46,7 +46,7 @@ input {
       preemptible_tries = papi_settings.agg_preemptible_tries
   }
 
-  # QC the final BAM some more (no such thing as too much QC)
+  ##QC the final BAM some more (no such thing as too much QC)
   call QC.CollectAggregationMetrics as CollectAggregationMetrics {
     input:
       input_bam = base_recalibrated_bam,
@@ -59,7 +59,7 @@ input {
   }
 
   if (defined(haplotype_database_file) && defined(references.fingerprint_genotypes_file)) {
-    # Check the sample BAM fingerprint against the sample array
+    ##Check the sample BAM fingerprint against the sample array
     call QC.CheckFingerprint as CheckFingerprint {
       input:
         input_bam = base_recalibrated_bam,
@@ -73,7 +73,7 @@ input {
     }
   }
 
-  # Generate a checksum per readgroup in the final BAM
+  ##Generate a checksum per readgroup in the final BAM
   call QC.CalculateReadGroupChecksum as CalculateReadGroupChecksum {
     input:
       input_bam = base_recalibrated_bam,

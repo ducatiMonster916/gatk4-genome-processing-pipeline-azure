@@ -1,32 +1,32 @@
 version 1.0
 
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL pipeline implements data pre-processing and initial variant calling (GVCF
-## generation) according to the GATK Best Practices (June 2016) for germline SNP and
-## Indel discovery in human whole-genome data.
+###This WDL pipeline implements data pre-processing and initial variant calling (GVCF
+###generation) according to the GATK Best Practices (June 2016) for germline SNP and
+###Indel discovery in human whole-genome data.
 ##
-## Requirements/expectations :
-## - Human whole-genome pair-end sequencing data in unmapped BAM (uBAM) format
-## - One or more read groups, one per uBAM file, all belonging to a single sample (SM)
-## - Input uBAM files must additionally comply with the following requirements:
-## - - filenames all have the same suffix (we use ".unmapped.bam")
-## - - files must pass validation by ValidateSamFile
-## - - reads are provided in query-sorted order
-## - - all reads must have an RG tag
-## - GVCF output names must end in ".g.vcf.gz"
-## - Reference genome must be Hg38 with ALT contigs
+###Requirements/expectations :
+###- Human whole-genome pair-end sequencing data in unmapped BAM (uBAM) format
+###- One or more read groups, one per uBAM file, all belonging to a single sample (SM)
+###- Input uBAM files must additionally comply with the following requirements:
+###- - filenames all have the same suffix (we use ".unmapped.bam")
+###- - files must pass validation by ValidateSamFile
+###- - reads are provided in query-sorted order
+###- - all reads must have an RG tag
+###- GVCF output names must end in ".g.vcf.gz"
+###- Reference genome must be Hg38 with ALT contigs
 ##
-## Runtime parameters are optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
 #import "./tasks/UnmappedBamToAlignedBam.wdl" as ToBam
 #import "./tasks/AggregatedBamQC.wdl" as AggregatedQC
@@ -42,7 +42,7 @@ import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processi
 import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/VariantCalling.wdl" as ToGvcf
 import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
 
-# WORKFLOW DEFINITION
+##WORKFLOW DEFINITION
 workflow WholeGenomeGermlineSingleSample {
 
   String pipeline_version = "1.4"
@@ -58,7 +58,7 @@ workflow WholeGenomeGermlineSingleSample {
     Boolean use_gatk3_haplotype_caller = false
   }
 
-  # Not overridable:
+  ##Not overridable:
   Int read_length = 150
   Float lod_threshold = -20.0
   String cross_check_fingerprints_by = "READGROUP"
@@ -104,7 +104,7 @@ workflow WholeGenomeGermlineSingleSample {
       agg_preemptible_tries = papi_settings.agg_preemptible_tries
   }
 
-  # QC the sample WGS metrics (stringent thresholds)
+  ##QC the sample WGS metrics (stringent thresholds)
   call QC.CollectWgsMetrics as CollectWgsMetrics {
     input:
       input_bam = UnmappedBamToAlignedBam.output_bam,
@@ -117,7 +117,7 @@ workflow WholeGenomeGermlineSingleSample {
       preemptible_tries = papi_settings.agg_preemptible_tries
   }
 
-  # QC the sample raw WGS metrics (common thresholds)
+  ##QC the sample raw WGS metrics (common thresholds)
   call QC.CollectRawWgsMetrics as CollectRawWgsMetrics {
     input:
       input_bam = UnmappedBamToAlignedBam.output_bam,
@@ -155,7 +155,7 @@ workflow WholeGenomeGermlineSingleSample {
     File provided_output_bam_index = UnmappedBamToAlignedBam.output_bam_index
   }
 
-  # Outputs that will be retained when execution is complete
+  ##Outputs that will be retained when execution is complete
   output {
     Array[File] quality_yield_metrics = UnmappedBamToAlignedBam.quality_yield_metrics
 

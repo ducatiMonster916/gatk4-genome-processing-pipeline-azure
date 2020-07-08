@@ -24,8 +24,8 @@ workflow VariantCalling {
     File ref_fasta_index
     File ref_dict
   
-  #  File dbsnp_vcf
-  #  File dbsnp_vcf_index
+  ## File dbsnp_vcf
+  ## File dbsnp_vcf_index
     String base_file_name
     String final_vcf_base_name
     Int agg_preemptible_tries
@@ -38,8 +38,8 @@ workflow VariantCalling {
     make_bamout: "For CNNScoreVariants to run with a 2D model, a bamout must be created by HaplotypeCaller. The bamout is a bam containing information on how HaplotypeCaller remapped reads while it was calling variants. See https://gatkforums.broadinstitute.org/gatk/discussion/5484/howto-generate-a-bamout-file-showing-how-haplotypecaller-has-remapped-sequence-reads for more details."
   }
 
-  # Break the calling interval_list into sub-intervals
-  # Perform variant calling on the sub-intervals, and then gather the results
+  ##Break the calling interval_list into sub-intervals
+  ##Perform variant calling on the sub-intervals, and then gather the results
   call Utils.ScatterIntervalList as ScatterIntervalList {
     input:
       interval_list = calling_interval_list,
@@ -47,13 +47,13 @@ workflow VariantCalling {
       break_bands_at_multiples_of = break_bands_at_multiples_of
   }
 
-  # We need disk to localize the sharded input and output due to the scatter for HaplotypeCaller.
-  # If we take the number we are scattering by and reduce by 20 we will have enough disk space
-  # to account for the fact that the data is quite uneven across the shards.
+  ##We need disk to localize the sharded input and output due to the scatter for HaplotypeCaller.
+  ##If we take the number we are scattering by and reduce by 20 we will have enough disk space
+  ##to account for the fact that the data is quite uneven across the shards.
   Int potential_hc_divisor = ScatterIntervalList.interval_count - 20
   Int hc_divisor = if potential_hc_divisor > 1 then potential_hc_divisor else 1
 
-  # Call variants in parallel over WGS calling intervals
+  ##Call variants in parallel over WGS calling intervals
   scatter (scattered_interval_list in ScatterIntervalList.out) {
 
     if (use_gatk3_haplotype_caller) {
@@ -74,7 +74,7 @@ workflow VariantCalling {
 
     if (!use_gatk3_haplotype_caller) {
 
-      # Generate GVCF by interval
+      ##Generate GVCF by interval
       call Calling.HaplotypeCaller_GATK4_VCF as HaplotypeCallerGATK4 {
         input:
           contamination = contamination,
@@ -91,7 +91,7 @@ workflow VariantCalling {
           preemptible_tries = agg_preemptible_tries
        }
 
-      # If bamout files were created, we need to sort and gather them into one bamout
+      ##If bamout files were created, we need to sort and gather them into one bamout
       if (make_bamout) {
         call BamProcessing.SortSam as SortBamout {
           input:
@@ -107,7 +107,7 @@ workflow VariantCalling {
     File vcf_indices_to_merge = select_first([HaplotypeCallerGATK3.output_gvcf_index, HaplotypeCallerGATK4.output_vcf_index])
   }
 
-  # Combine by-interval (g)VCFs into a single sample (g)VCF file
+  ##Combine by-interval (g)VCFs into a single sample (g)VCF file
   String merge_suffix = if make_gvcf then ".g.vcf.gz" else ".vcf.gz"
   call Calling.MergeVCFs as MergeVCFs {
     input:
@@ -125,13 +125,13 @@ workflow VariantCalling {
     }
   }
 
-  # Validate the (g)VCF output of HaplotypeCaller
+  ##Validate the (g)VCF output of HaplotypeCaller
   call QC.ValidateVCF as ValidateVCF {
     input:
       input_vcf = MergeVCFs.output_vcf,
       input_vcf_index = MergeVCFs.output_vcf_index,
- #     dbsnp_vcf = dbsnp_vcf,
- #     dbsnp_vcf_index = dbsnp_vcf_index,
+ ##    dbsnp_vcf = dbsnp_vcf,
+ ##    dbsnp_vcf_index = dbsnp_vcf_index,
       ref_fasta = ref_fasta,
       ref_fasta_index = ref_fasta_index,
       ref_dict = ref_dict,
@@ -140,7 +140,7 @@ workflow VariantCalling {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # QC the (g)VCF
+  ##QC the (g)VCF
   call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
     input:
       input_vcf = MergeVCFs.output_vcf,
@@ -164,7 +164,7 @@ workflow VariantCalling {
   }
 }
 
-# This task is here because merging bamout files using Picard produces an error.
+##This task is here because merging bamout files using Picard produces an error.
 task MergeBamouts {
 
   input {

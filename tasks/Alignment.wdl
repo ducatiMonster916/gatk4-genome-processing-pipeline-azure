@@ -1,29 +1,29 @@
 version 1.0
 
-## Copyright Broad Institute, 2018
+###Copyright Broad Institute, 2018
 ##
-## This WDL defines tasks used for alignment of human whole-genome or exome sequencing data.
+###This WDL defines tasks used for alignment of human whole-genome or exome sequencing data.
 ##
-## Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
-## For program versions, see docker containers.
+###Runtime parameters are often optimized for Broad's Google Cloud Platform implementation.
+###For program versions, see docker containers.
 ##
-## LICENSING :
-## This script is released under the WDL source code license (BSD-3) (see LICENSE in
-## https://github.com/broadinstitute/wdl). Note however that the programs it calls may
-## be subject to different licenses. Users are responsible for checking that they are
-## authorized to run all programs before running this script. Please see the docker
-## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
-## licensing information pertaining to the included programs.
+###LICENSING :
+###This script is released under the WDL source code license (BSD-3) (see LICENSE in
+###https://github.com/broadinstitute/wdl). Note however that the programs it calls may
+###be subject to different licenses. Users are responsible for checking that they are
+###authorized to run all programs before running this script. Please see the docker
+###page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
+###licensing information pertaining to the included programs.
 
 #import "../structs/GermlineStructs.wdl"
 
 import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
 
-# Get version of BWA
+##Get version of BWA
 task GetBwaVersion {
   command {
-    # not setting set -o pipefail here because /bwa has a rc=1 and we dont want to allow rc=1 to succeed because
-    # the sed may also fail with that error and that is something we actually want to fail on.
+    ##not setting set -o pipefail here because /bwa has a rc=1 and we dont want to allow rc=1 to succeed because
+    ##the sed may also fail with that error and that is something we actually want to fail on.
     /usr/gitc/bwa 2>&1 | \
     grep -e '^Version' | \
     sed 's/Version: //'
@@ -37,7 +37,7 @@ task GetBwaVersion {
   }
 }
 
-# Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment, then stream to MergeBamAlignment
+##Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment, then stream to MergeBamAlignment
 task SamToFastqAndBwaMemAndMba {
   input {
     File input_bam
@@ -45,9 +45,9 @@ task SamToFastqAndBwaMemAndMba {
     String bwa_version
     String output_bam_basename
 
-    # reference_fasta.ref_alt is the .alt file from bwa-kit
-    # (https://github.com/lh3/bwa/tree/master/bwakit),
-    # listing the reference contigs that are "alternative".
+    ##reference_fasta.ref_alt is the .alt file from bwa-kit
+    ##(https://github.com/lh3/bwa/tree/master/bwakit),
+    ##listing the reference contigs that are "alternative".
     ReferenceFasta reference_fasta
 
     Int compression_level
@@ -57,8 +57,8 @@ task SamToFastqAndBwaMemAndMba {
   Float unmapped_bam_size = size(input_bam, "GB")
   Float ref_size = size(reference_fasta.ref_fasta, "GB") + size(reference_fasta.ref_fasta_index, "GB") + size(reference_fasta.ref_dict, "GB")
   Float bwa_ref_size = ref_size + size(reference_fasta.ref_alt, "GB") + size(reference_fasta.ref_amb, "GB") + size(reference_fasta.ref_ann, "GB") + size(reference_fasta.ref_bwt, "GB") + size(reference_fasta.ref_pac, "GB") + size(reference_fasta.ref_sa, "GB")
-  # Sometimes the output is larger than the input, or a task can spill to disk.
-  # In these cases we need to account for the input (1) and the output (1.5) or the input(1), the output(1), and spillage (.5).
+  ##Sometimes the output is larger than the input, or a task can spill to disk.
+  ##In these cases we need to account for the input (1) and the output (1.5) or the input(1), the output(1), and spillage (.5).
   Float disk_multiplier = 2.5
   Int disk_size = ceil(unmapped_bam_size + bwa_ref_size + (disk_multiplier * unmapped_bam_size) + 20)
 
@@ -66,9 +66,9 @@ task SamToFastqAndBwaMemAndMba {
     set -o pipefail
     set -e
 
-    # set the bash variable needed for the command-line
+    ##set the bash variable needed for the command-line
     bash_ref_fasta=~{reference_fasta.ref_fasta}
-    # if reference_fasta.ref_alt has data in it,
+    ##if reference_fasta.ref_alt has data in it,
     if [ -s ~{reference_fasta.ref_alt} ]; then
       java -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         SamToFastq \
@@ -109,7 +109,7 @@ task SamToFastqAndBwaMemAndMba {
       grep -m1 "read .* ALT contigs" ~{output_bam_basename}.bwa.stderr.log | \
       grep -v "read 0 ALT contigs"
 
-    # else reference_fasta.ref_alt is empty or could not be found
+    ##else reference_fasta.ref_alt is empty or could not be found
     else
       exit 1;
     fi
@@ -137,7 +137,7 @@ task SamSplitter {
   }
 
   Float unmapped_bam_size = size(input_bam, "GB")
-  # Since the output bams are less compressed than the input bam we need a disk multiplier that's larger than 2.
+  ##Since the output bams are less compressed than the input bam we need a disk multiplier that's larger than 2.
   Float disk_multiplier = 2.5
   Int disk_size = ceil(disk_multiplier * unmapped_bam_size + 20)
 
