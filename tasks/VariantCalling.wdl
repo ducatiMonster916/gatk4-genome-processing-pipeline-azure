@@ -141,22 +141,22 @@ workflow VariantCalling {
   }
 
   ##QC the (g)VCF
-  call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
-    input:
-      input_vcf = MergeVCFs.output_vcf,
-      input_vcf_index = MergeVCFs.output_vcf_index,
-      metrics_basename = final_vcf_base_name,
-      dbsnp_vcf = dbsnp_vcf,
-      dbsnp_vcf_index = dbsnp_vcf_index,
-      ref_dict = ref_dict,
-      evaluation_interval_list = evaluation_interval_list,
-      is_gvcf = make_gvcf,
-      preemptible_tries = agg_preemptible_tries
-  }
+  # call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
+  #   input:
+  #     input_vcf = MergeVCFs.output_vcf,
+  #     input_vcf_index = MergeVCFs.output_vcf_index,
+  #     metrics_basename = final_vcf_base_name,
+  #     dbsnp_vcf = dbsnp_vcf,
+  #     dbsnp_vcf_index = dbsnp_vcf_index,
+  #     ref_dict = ref_dict,
+  #     evaluation_interval_list = evaluation_interval_list,
+  #     is_gvcf = make_gvcf,
+  #     preemptible_tries = agg_preemptible_tries
+  # }
 
   output {
-    File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
-    File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
+    # File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
+    # File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
     File output_vcf = MergeVCFs.output_vcf
     File output_vcf_index = MergeVCFs.output_vcf_index
     File? bamout = MergeBamouts.output_bam

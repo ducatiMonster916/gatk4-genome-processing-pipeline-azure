@@ -28,7 +28,7 @@ struct GermlineSingleSampleReferences {
   File? contamination_sites_ud
   File? contamination_sites_bed
   File? contamination_sites_mu
-  File? calling_interval_list
+  File calling_interval_list
 
   Int haplotype_scatter_count
   Int break_bands_at_multiples_of

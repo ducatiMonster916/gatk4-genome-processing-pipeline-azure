@@ -61,7 +61,7 @@ workflow WholeGenomeGermlineSingleSample {
   ##Not overridable:
   Int read_length = 150
   Float lod_threshold = -20.0
-  String cross_check_fingerprints_by = "READGROUP"
+  # String cross_check_fingerprints_by = "READGROUP"
   String recalibrated_bam_basename = sample_and_unmapped_bams.base_file_name + ".aligned.duplicates_marked.recalibrated"
 
   call ToBam.UnmappedBamToAlignedBam {
@@ -74,7 +74,7 @@ workflow WholeGenomeGermlineSingleSample {
       #contamination_sites_bed = references.contamination_sites_bed,
       #contamination_sites_mu = references.contamination_sites_mu,
 
-      cross_check_fingerprints_by = cross_check_fingerprints_by,
+      # cross_check_fingerprints_by = cross_check_fingerprints_by,
       haplotype_database_file     = haplotype_database_file,
       lod_threshold               = lod_threshold,
       recalibrated_bam_basename   = recalibrated_bam_basename
@@ -136,7 +136,7 @@ workflow WholeGenomeGermlineSingleSample {
       evaluation_interval_list = references.evaluation_interval_list,
       haplotype_scatter_count = references.haplotype_scatter_count,
       break_bands_at_multiples_of = references.break_bands_at_multiples_of,
-      contamination = UnmappedBamToAlignedBam.contamination,
+      # contamination = UnmappedBamToAlignedBam.contamination,
       input_bam = UnmappedBamToAlignedBam.output_bam,
       input_bam_index = UnmappedBamToAlignedBam.output_bam_index,
       ref_fasta = references.reference_fasta.ref_fasta,
@@ -173,10 +173,10 @@ workflow WholeGenomeGermlineSingleSample {
     File read_group_gc_bias_pdf = AggregatedBamQC.read_group_gc_bias_pdf
     File read_group_gc_bias_summary_metrics = AggregatedBamQC.read_group_gc_bias_summary_metrics
 
-    File? cross_check_fingerprints_metrics = UnmappedBamToAlignedBam.cross_check_fingerprints_metrics
+    # File? cross_check_fingerprints_metrics = UnmappedBamToAlignedBam.cross_check_fingerprints_metrics
 
     #File selfSM = UnmappedBamToAlignedBam.selfSM
-    Float? contamination = UnmappedBamToAlignedBam.contamination
+    # Float? contamination = UnmappedBamToAlignedBam.contamination
 
     File calculate_read_group_checksum_md5 = AggregatedBamQC.calculate_read_group_checksum_md5
 
@@ -194,17 +194,17 @@ workflow WholeGenomeGermlineSingleSample {
     File agg_quality_distribution_metrics = AggregatedBamQC.agg_quality_distribution_metrics
     File agg_error_summary_metrics = AggregatedBamQC.agg_error_summary_metrics
 
-    File? fingerprint_summary_metrics = AggregatedBamQC.fingerprint_summary_metrics
-    File? fingerprint_detail_metrics = AggregatedBamQC.fingerprint_detail_metrics
+    # File? fingerprint_summary_metrics = AggregatedBamQC.fingerprint_summary_metrics
+    # File? fingerprint_detail_metrics = AggregatedBamQC.fingerprint_detail_metrics
 
     File wgs_metrics = CollectWgsMetrics.metrics
     File raw_wgs_metrics = CollectRawWgsMetrics.metrics
 
-    File duplicate_metrics = UnmappedBamToAlignedBam.duplicate_metrics
+    File? duplicate_metrics = UnmappedBamToAlignedBam.duplicate_metrics
     #File output_bqsr_reports = UnmappedBamToAlignedBam.output_bqsr_reports
 
-    File gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
-    File gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
+    # File gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
+    # File gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
 
     File? output_bam = provided_output_bam
     File? output_bam_index = provided_output_bam_index
