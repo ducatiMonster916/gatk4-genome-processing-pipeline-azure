@@ -15,7 +15,13 @@
     "reference_fasta": {
       "ref_dict": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.dict",
       "ref_fasta": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa",
-      "ref_fasta_index": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.fai"
+      "ref_fasta_index": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.fai",
+      "ref_alt": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.alt",
+      "ref_sa": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.sa",
+      "ref_amb": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.amb",
+      "ref_bwt": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.bwt",
+      "ref_ann": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.ann",
+      "ref_pac": "/anupcoab7516485940e/inputs/SRR12054092/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.pac"
     },
     "evaluation_interval_list": "/anupcoab7516485940e/inputs/SRR12054092/intervals.interval_list"
   },
