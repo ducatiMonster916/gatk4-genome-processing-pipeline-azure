@@ -5,10 +5,10 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "./BamProcessing.wdl" as BamProcessing
 
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/GermlineVariantDiscovery.wdl" as Calling
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as BamProcessing
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/GermlineVariantDiscovery.wdl" as Calling
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamProcessing.wdl" as BamProcessing
 
 workflow VariantCalling {
 
@@ -141,22 +141,22 @@ workflow VariantCalling {
   }
 
   ##QC the (g)VCF
-  call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
-    input:
-      input_vcf = MergeVCFs.output_vcf,
-      input_vcf_index = MergeVCFs.output_vcf_index,
-      metrics_basename = final_vcf_base_name,
-      dbsnp_vcf = dbsnp_vcf,
-      dbsnp_vcf_index = dbsnp_vcf_index,
-      ref_dict = ref_dict,
-      evaluation_interval_list = evaluation_interval_list,
-      is_gvcf = make_gvcf,
-      preemptible_tries = agg_preemptible_tries
-  }
+  # call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
+  #   input:
+  #     input_vcf = MergeVCFs.output_vcf,
+  #     input_vcf_index = MergeVCFs.output_vcf_index,
+  #     metrics_basename = final_vcf_base_name,
+  #     dbsnp_vcf = dbsnp_vcf,
+  #     dbsnp_vcf_index = dbsnp_vcf_index,
+  #     ref_dict = ref_dict,
+  #     evaluation_interval_list = evaluation_interval_list,
+  #     is_gvcf = make_gvcf,
+  #     preemptible_tries = agg_preemptible_tries
+  # }
 
   output {
-    File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
-    File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
+    # File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
+    # File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
     File output_vcf = MergeVCFs.output_vcf
     File output_vcf_index = MergeVCFs.output_vcf_index
     File? bamout = MergeBamouts.output_bam

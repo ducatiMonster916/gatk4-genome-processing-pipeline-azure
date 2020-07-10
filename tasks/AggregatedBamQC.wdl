@@ -18,8 +18,8 @@ version 1.0
 #import "./Qc.wdl" as QC
 #import "../structs/GermlineStructs.wdl"
 
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl"
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/structs/GermlineStructs.wdl"
 
 ##WORKFLOW DEFINITION
 workflow AggregatedBamQC {
@@ -59,18 +59,18 @@ input {
   }
 
   if (defined(haplotype_database_file) && defined(references.fingerprint_genotypes_file)) {
-    ##Check the sample BAM fingerprint against the sample array
-    call QC.CheckFingerprint as CheckFingerprint {
-      input:
-        input_bam = base_recalibrated_bam,
-        input_bam_index = base_recalibrated_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        genotypes = references.fingerprint_genotypes_file,
-        genotypes_index = references.fingerprint_genotypes_index,
-        output_basename = base_name,
-        sample = sample_name,
-        preemptible_tries = papi_settings.agg_preemptible_tries
-    }
+    # # Check the sample BAM fingerprint against the sample array
+    # call QC.CheckFingerprint as CheckFingerprint {
+    #   input:
+    #     input_bam = base_recalibrated_bam,
+    #     input_bam_index = base_recalibrated_bam_index,
+    #     haplotype_database_file = haplotype_database_file,
+    #     genotypes = references.fingerprint_genotypes_file,
+    #     genotypes_index = references.fingerprint_genotypes_index,
+    #     output_basename = base_name,
+    #     sample = sample_name,
+    #     preemptible_tries = papi_settings.agg_preemptible_tries
+    # }
   }
 
   ##Generate a checksum per readgroup in the final BAM
@@ -104,7 +104,7 @@ input {
     File agg_quality_distribution_metrics = CollectAggregationMetrics.quality_distribution_metrics
     File agg_error_summary_metrics = CollectAggregationMetrics.error_summary_metrics
 
-    File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
-    File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
+    # File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
+    # File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
   }
 }

@@ -492,14 +492,26 @@ task CollectHsMetrics {
   Int java_memory_size = (memory_size - 1) * 1000
 
   ##There are probably more metrics we want to generate with this tool
+  # command {
+  #   java -Xms~{java_memory_size}m -jar /usr/gitc/picard.jar \
+  #     CollectHsMetrics \
+  #     INPUT=~{input_bam} \
+  #     REFERENCE_SEQUENCE=~{ref_fasta} \
+  #     VALIDATION_STRINGENCY=SILENT \
+  #     TARGET_INTERVALS=~{target_interval_list} \
+  #     BAIT_INTERVALS=~{bait_interval_list} \
+  #     METRIC_ACCUMULATION_LEVEL=null \
+  #     METRIC_ACCUMULATION_LEVEL=SAMPLE \
+  #     METRIC_ACCUMULATION_LEVEL=LIBRARY \
+  #     OUTPUT=~{metrics_filename}
+  # }
+
   command {
     java -Xms~{java_memory_size}m -jar /usr/gitc/picard.jar \
       CollectHsMetrics \
       INPUT=~{input_bam} \
       REFERENCE_SEQUENCE=~{ref_fasta} \
       VALIDATION_STRINGENCY=SILENT \
-      TARGET_INTERVALS=~{target_interval_list} \
-      BAIT_INTERVALS=~{bait_interval_list} \
       METRIC_ACCUMULATION_LEVEL=null \
       METRIC_ACCUMULATION_LEVEL=SAMPLE \
       METRIC_ACCUMULATION_LEVEL=LIBRARY \
@@ -565,7 +577,8 @@ task ValidateVCF {
   }
 
   Float ref_size = size(ref_fasta, "GB") + size(ref_fasta_index, "GB") + size(ref_dict, "GB")
-  Int disk_size = ceil(size(input_vcf, "GB") + size(dbsnp_vcf, "GB") + ref_size) + 20
+  # Int disk_size = ceil(size(input_vcf, "GB") + size(dbsnp_vcf, "GB") + ref_size) + 20
+  Int disk_size = ceil(size(input_vcf, "GB") + ref_size) + 20
 
   command {
     gatk --java-options -Xms6000m \

@@ -23,12 +23,12 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "../structs/GermlineStructs.wdl" as Structs
 
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Alignment.wdl" as Alignment
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/SplitLargeReadGroup.wdl" as SplitRG
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/BamProcessing.wdl" as Processing
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/az1.1.0/structs/GermlineStructs.wdl" as Structs
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Alignment.wdl" as Alignment
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/SplitLargeReadGroup.wdl" as SplitRG
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamProcessing.wdl" as Processing
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/structs/GermlineStructs.wdl" as Structs
 
 ##WORKFLOW DEFINITION
 workflow UnmappedBamToAlignedBam {
@@ -155,17 +155,17 @@ workflow UnmappedBamToAlignedBam {
 
   if (defined(haplotype_database_file)) {
     ##Check identity of fingerprints across readgroups
-    call QC.CrossCheckFingerprints as CrossCheckFingerprints {
-      input:
-        input_bams = [ SortSampleBam.output_bam ],
-        input_bam_indexes = [SortSampleBam.output_bam_index],
-        haplotype_database_file = haplotype_database_file,
-        metrics_filename = sample_and_unmapped_bams.base_file_name + ".crosscheck",
-        total_input_size = agg_bam_size,
-        lod_threshold = lod_threshold,
-        cross_check_by = cross_check_fingerprints_by,
-        preemptible_tries = papi_settings.agg_preemptible_tries
-    }
+    # call QC.CrossCheckFingerprints as CrossCheckFingerprints {
+    #   input:
+    #     input_bams = [ SortSampleBam.output_bam ],
+    #     input_bam_indexes = [SortSampleBam.output_bam_index],
+    #     haplotype_database_file = haplotype_database_file,
+    #     metrics_filename = sample_and_unmapped_bams.base_file_name + ".crosscheck",
+    #     total_input_size = agg_bam_size,
+    #     lod_threshold = lod_threshold,
+    #     cross_check_by = cross_check_fingerprints_by,
+    #     preemptible_tries = papi_settings.agg_preemptible_tries
+    # }
   }
 
   ##Create list of sequences for scatter-gather parallelization
@@ -176,19 +176,19 @@ workflow UnmappedBamToAlignedBam {
   }
 
   ##Estimate level of cross-sample contamination
-  call Processing.CheckContamination as CheckContamination {
-    input:
-      input_bam = SortSampleBam.output_bam,
-      input_bam_index = SortSampleBam.output_bam_index,
-      contamination_sites_ud = contamination_sites_ud,
-      contamination_sites_bed = contamination_sites_bed,
-      contamination_sites_mu = contamination_sites_mu,
-      ref_fasta = references.reference_fasta.ref_fasta,
-      ref_fasta_index = references.reference_fasta.ref_fasta_index,
-      output_prefix = sample_and_unmapped_bams.base_file_name + ".preBqsr",
-      preemptible_tries = papi_settings.agg_preemptible_tries,
-      contamination_underestimation_factor = 0.75
-  }
+  # call Processing.CheckContamination as CheckContamination {
+  #   input:
+  #     input_bam = SortSampleBam.output_bam,
+  #     input_bam_index = SortSampleBam.output_bam_index,
+  #     contamination_sites_ud = contamination_sites_ud,
+  #     contamination_sites_bed = contamination_sites_bed,
+  #     contamination_sites_mu = contamination_sites_mu,
+  #     ref_fasta = references.reference_fasta.ref_fasta,
+  #     ref_fasta_index = references.reference_fasta.ref_fasta_index,
+  #     output_prefix = sample_and_unmapped_bams.base_file_name + ".preBqsr",
+  #     preemptible_tries = papi_settings.agg_preemptible_tries,
+  #     contamination_underestimation_factor = 0.75
+  # }
 
   ##We need disk to localize the sharded input and output due to the scatter for BQSR.
   ##If we take the number we are scattering by and reduce by 3 we will have enough disk space
@@ -268,13 +268,13 @@ workflow UnmappedBamToAlignedBam {
     Array[File] unsorted_read_group_quality_distribution_pdf = CollectUnsortedReadgroupBamQualityMetrics.quality_distribution_pdf
     Array[File] unsorted_read_group_quality_distribution_metrics = CollectUnsortedReadgroupBamQualityMetrics.quality_distribution_metrics
 
-    File? cross_check_fingerprints_metrics = CrossCheckFingerprints.cross_check_fingerprints_metrics
+    # File? cross_check_fingerprints_metrics = CrossCheckFingerprints.cross_check_fingerprints_metrics
 
-    File? selfSM = CheckContamination.selfSM
-    Float? contamination = CheckContamination.contamination
+    # File? selfSM = CheckContamination.selfSM
+    # Float? contamination = CheckContamination.contamination
 
-    File? duplicate_metrics = MarkDuplicates.duplicate_metrics
-    File? output_bqsr_reports = GatherBqsrReports.output_bqsr_report
+    File duplicate_metrics = MarkDuplicates.duplicate_metrics
+    # File? output_bqsr_reports = GatherBqsrReports.output_bqsr_report
 
     File output_bam = GatherBamFiles.output_bam
     File output_bam_index = GatherBamFiles.output_bam_index
