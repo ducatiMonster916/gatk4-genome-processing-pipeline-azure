@@ -23,12 +23,12 @@ version 1.0
 #import "./Utilities.wdl" as Utils
 #import "../structs/GermlineStructs.wdl" as Structs
 
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Alignment.wdl" as Alignment
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/SplitLargeReadGroup.wdl" as SplitRG
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamProcessing.wdl" as Processing
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Utilities.wdl" as Utils
-import "https://raw.githubusercontent.com/108anup/gatk4-genome-processing-pipeline-azure/master-azure/structs/GermlineStructs.wdl" as Structs
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Alignment.wdl" as Alignment
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/tasks/SplitLargeReadGroup.wdl" as SplitRG
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Qc.wdl" as QC
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/tasks/BamProcessing.wdl" as Processing
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/tasks/Utilities.wdl" as Utils
+import "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/structs/GermlineStructs.wdl" as Structs
 
 ##WORKFLOW DEFINITION
 workflow UnmappedBamToAlignedBam {
