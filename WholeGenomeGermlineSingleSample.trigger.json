@@ -1,6 +1,6 @@
 {
   "WorkflowUrl": "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/WholeGenomeGermlineSingleSample.wdl",
-  "WorkflowInputsUrl": "https://raw.githubusercontent.com/ducatiMonster916/gatk4-genome-processing-pipeline-azure/master-azure/WholeGenomeGermlineSingleSample.inputs.json",
+  "WorkflowInputsUrl": "https://prodcoatesta6c4567617.blob.core.windows.net/inputs/HumanTestData/WholeGenomeGermlineSingleSample.human_sample_data.inputs.json",
   "WorkflowOptionsUrl": null,
   "WorkflowDependenciesUrl": null
 }
