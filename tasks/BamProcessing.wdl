@@ -316,7 +316,7 @@ task ApplyBQSR {
   command{
     md5sum ~{input_bam} > ~{output_bam_basename}.bam.md5
     cp ~{input_bam} ~{output_bam_basename}.bam
-    cp ~{input_bam_index} ~{output_bam_index}
+    cp ~{input_bam_index} ~{output_bam_index}.bai
   }
   runtime {
     docker: gatk_docker
