@@ -326,7 +326,7 @@ task ApplyBQSR {
     disk: disk_size + " GB"
   }
   output {
-    File recalibrated_bam = "~{input_bam}.bam"
+    File recalibrated_bam = "~{output_bam_basename}.bam"
     File recalibrated_bam_checksum = "~{output_bam_basename}.bam.md5"
   }
 }
