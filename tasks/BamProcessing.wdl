@@ -377,6 +377,7 @@ task GatherSortedBamFiles {
       INPUT=~{sep=' INPUT=' input_bams} \
       OUTPUT=~{output_bam_basename}.bam \
       CREATE_INDEX=true \
+      VALIDATION_STRINGENCY=SILENT \
       CREATE_MD5_FILE=true
     }
   runtime {
@@ -405,7 +406,7 @@ task GatherUnsortedBamFiles {
   }
 
   ##Multiply the input bam size by two to account for the input and output
-  Int disk_size = ceil(2 * total_input_size) + 20
+  Int disk_size = ceil(20 * total_input_size) + 20
 
   command {
     java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
@@ -413,6 +414,7 @@ task GatherUnsortedBamFiles {
       INPUT=~{sep=' INPUT=' input_bams} \
       OUTPUT=~{output_bam_basename}.bam \
       CREATE_INDEX=false \
+      VALIDATION_STRINGENCY=SILENT \
       CREATE_MD5_FILE=false
     }
   runtime {
