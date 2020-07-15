@@ -57,7 +57,7 @@ task SamToFastqAndBwaMemAndMba {
   Float unmapped_bam_size = size(input_bam, "GB")
   Float ref_size = size(reference_fasta.ref_fasta, "GB") + size(reference_fasta.ref_fasta_index, "GB") + size(reference_fasta.ref_dict, "GB")
   # Float bwa_ref_size = ref_size + size(reference_fasta.ref_alt, "GB") + size(reference_fasta.ref_amb, "GB") + size(reference_fasta.ref_ann, "GB") + size(reference_fasta.ref_bwt, "GB") + size(reference_fasta.ref_pac, "GB") + size(reference_fasta.ref_sa, "GB")
-  Float bwa_ref_size = ref_size + size(reference_fasta.ref_amb, "GB") + size(reference_fasta.ref_ann, "GB") + size(reference_fasta.ref_bwt, "GB") + size(reference_fasta.ref_pac, "GB") + size(reference_fasta.ref_sa, "GB")
+  Float bwa_ref_size = ref_size + 20
   ##Sometimes the output is larger than the input, or a task can spill to disk.
   ##In these cases we need to account for the input (1) and the output (1.5) or the input(1), the output(1), and spillage (.5).
   Float disk_multiplier = 2.5

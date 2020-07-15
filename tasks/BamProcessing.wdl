@@ -369,7 +369,7 @@ task GatherSortedBamFiles {
   }
 
   ##Multiply the input bam size by two to account for the input and output
-  Int disk_size = ceil(3 * total_input_size) + 20
+  Int disk_size = ceil(20 * total_input_size) + 20
 
   command {
     java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
