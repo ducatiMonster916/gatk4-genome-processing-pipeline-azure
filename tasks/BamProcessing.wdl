@@ -252,6 +252,7 @@ task BaseRecalibrator {
  ##}
  command {
    md5sum ~{input_bam} > ~{input_bam}.md5
+   touch ~{recalibration_report_filename}
  }
   runtime {
     docker: gatk_docker
@@ -261,7 +262,7 @@ task BaseRecalibrator {
     disk: disk_size + " GB"
   }
   output {
-    File? recalibration_report = "~{recalibration_report_filename}"
+    File recalibration_report = "~{recalibration_report_filename}"
   }
 }
 
