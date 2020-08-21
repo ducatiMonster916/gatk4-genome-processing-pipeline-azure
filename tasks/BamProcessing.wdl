@@ -370,16 +370,27 @@ task GatherSortedBamFiles {
   }
 
   ##Multiply the input bam size by two to account for the input and output
-  Int disk_size = ceil(20 * total_input_size) + 20
+  Int disk_size = ceil(30 * total_input_size) + 20
 
   command {
     java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
       GatherBamFiles \
       INPUT=~{sep=' INPUT=' input_bams} \
-      OUTPUT=~{output_bam_basename}.bam \
-      CREATE_INDEX=true \
+      OUTPUT=~{output_bam_basename}.unsorted.bam \
+      CREATE_INDEX=false \
       VALIDATION_STRINGENCY=SILENT \
       CREATE_MD5_FILE=true
+    java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
+      SortSam \
+      INPUT=~{output_bam_basename}.unsorted.bam \
+      OUTPUT=~{output_bam_basename}.bam  \
+      SORTORDER=coordinate \
+      VALIDATION_STRINGENCY=SILENT
+    java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
+      BuildBamIndex \
+      INPUT=~{output_bam_basename}.bam \
+      OUTPUT=~{output_bam_basename}.bai \
+      VALIDATION_STRINGENCY=SILENT 
     }
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
