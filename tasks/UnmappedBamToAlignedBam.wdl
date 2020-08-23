@@ -151,7 +151,7 @@ workflow UnmappedBamToAlignedBam {
       preemptible_tries = if data_too_large_for_preemptibles then 0 else papi_settings.agg_preemptible_tries
   }
 
-  Float agg_bam_size = size(SortSampleBam.output_bam, "GB")
+  Float agg_bam_size = size(SortSampleBam.output_bam, "GB") * 3
 
   if (defined(haplotype_database_file)) {
     ##Check identity of fingerprints across readgroups
