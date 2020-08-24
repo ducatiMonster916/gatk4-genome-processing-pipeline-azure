@@ -384,7 +384,7 @@ task GatherSortedBamFiles {
       SortSam \
       INPUT=~{output_bam_basename}.unsorted.bam \
       OUTPUT=~{output_bam_basename}.bam  \
-      SORTORDER=coordinate \
+      SORT_ORDER=coordinate \
       VALIDATION_STRINGENCY=SILENT
     java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
       BuildBamIndex \
