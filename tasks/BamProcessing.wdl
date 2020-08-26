@@ -385,12 +385,13 @@ task GatherSortedBamFiles {
       INPUT=~{output_bam_basename}.unsorted.bam \
       OUTPUT=~{output_bam_basename}.bam  \
       SORT_ORDER=coordinate \
-      VALIDATION_STRINGENCY=SILENT
+      VALIDATION_STRINGENCY=SILENT  \
+      CREATE_MD5_FILE=true
     java -Dsamjdk.compression_level=~{compression_level} -Xms2000m -jar /usr/gitc/picard.jar \
       BuildBamIndex \
       INPUT=~{output_bam_basename}.bam \
       OUTPUT=~{output_bam_basename}.bai \
-      VALIDATION_STRINGENCY=SILENT 
+      VALIDATION_STRINGENCY=SILENT
     }
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.3-1564508330"
